@@ -1,0 +1,115 @@
+/* NAVBAR */
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+ul li {
+  float: left;
+}
+
+ul li a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 14px 16px;
+}
+
+ul li a:hover {
+  background-color: green;
+}
+
+/* MAIN LAYOUT */
+
+.main-layout {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* FEED */
+
+.feed-section {
+  flex: 3;
+}
+
+/* POST CARD */
+
+.post-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 25px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* IMAGE */
+
+.post-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 500px;
+
+  object-fit: contain;
+
+  border-radius: 10px;
+
+  display: block;
+  margin: 10px auto;
+}
+
+/* REACTIONS */
+
+.reaction-buttons {
+  margin-top: 10px;
+}
+
+.reaction-buttons button {
+  margin-right: 10px;
+}
+
+/* QUOTES */
+
+.quote-section {
+  flex: 1;
+
+  background: #1e2a3a;
+  color: white;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  height: fit-content;
+}
+
+.quote {
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .quote-section {
+    order: 2;
+  }
+
+  .feed-section {
+    order: 1;
+  }
+
+  .post-image {
+    max-width: 100%;
+  }
+}

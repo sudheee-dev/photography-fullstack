@@ -1,0 +1,15 @@
+<a routerLink="/postlist">← Back to Feed</a>
+<h2>{{ isAdmin ? 'All Posts (Admin)' : 'My Posts' }}</h2>
+<div *ngFor="let post of posts()" class="post-card">
+  <img [src]="'http://localhost:3000/' + post.image_url" class="post-image" alt="Post Image" />
+  <p *ngIf="post.username">
+    <b>{{ post.username }}</b>
+  </p>
+  <p>{{ post.description }}</p>
+  <p>{{ post.location }}</p>
+
+  <button (click)="editPost(post.id)">Edit</button>
+  <button (click)="deletePost(post.id)">Delete</button>
+</div>
+
+<p *ngIf="posts().length === 0">No posts to show.</p>

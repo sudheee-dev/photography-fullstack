@@ -1,0 +1,74 @@
+<ul>
+  <li>
+    <a routerLink="/post">Post</a>
+  </li>
+
+  <li>
+    <a routerLink="/editprofile">Edit Profile</a>
+  </li>
+
+  <li>
+    <a routerLink="/post-edit">post edit</a>
+  </li>
+  <li>
+    <a [routerLink]="['/following-followers', 'followers']"> Followers </a>
+  </li>
+
+  <li>
+    <a [routerLink]="['/following-followers', 'following']"> Following </a>
+  </li>
+
+  <li style="float: right">
+    <a (click)="logout()">Logout</a>
+  </li>
+</ul>
+
+<div class="main-layout">
+  <div class="feed-section">
+    <h2>Feed</h2>
+
+    <div *ngFor="let post of posts()">
+      <p></p>
+
+      <div class="follow-button">
+        <h3>{{ post.username }}</h3>
+        <p>Post ID : {{ post.id }}</p>
+        <p>User ID : {{ post.user_id }}</p>
+        <p>Username : {{ post.username }}</p>
+        <button (click)="toggleFollow(post)">
+          {{ post.is_following ? 'Following' : 'Follow' }}
+        </button>
+      </div>
+
+      <img class="post-image" [src]="'http://localhost:3000/' + post.image_url" alt="Post Image" />
+
+      <p>{{ post.description }}</p>
+
+      <div class="reaction-buttons">
+        <button (click)="react(post.id, 'like')">👍 {{ post.like_count }}</button>
+        <button (click)="react(post.id, 'love')">❤️ {{ post.love_count }}</button>
+        <button (click)="react(post.id, 'fire')">🔥 {{ post.fire_count }}</button>
+        <button (click)="react(post.id, 'wow')">😲 {{ post.wow_count }}</button>
+      </div>
+
+      <div style="background: red; color: white; padding: 10px; margin-top: 10px">
+        LIKE={{ post.like_count }} LOVE={{ post.love_count }} FIRE={{ post.fire_count }} WOW={{
+          post.wow_count
+        }}
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-section">
+    <h3 class="quote">
+      "Photography has no rules, it is not a sport. It is the result which counts, no matter how it
+      is achieved."
+    </h3>
+    <h3 class="quote">"A photograph is like a recipe - memory the finished dish."</h3>
+    <h3 class="quote">"Don't pack up your camera until you've left the location."</h3>
+    <h3 class="quote">
+      "Photography is about finding out what can happen in the frame. When you put four edges around
+      some facts, you change those facts."
+    </h3>
+  </div>
+</div>

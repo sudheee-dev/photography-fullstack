@@ -1,0 +1,27 @@
+<ul>
+  <li>
+    <a routerLink="/postlist">Feed</a>
+  </li>
+</ul>
+
+<div class="layout">
+  <div class="post-container">
+    <h2>Create Post</h2>
+
+    <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+
+    <br /><br />
+
+    <textarea [(ngModel)]="description" placeholder="Description"></textarea>
+
+    <br /><br />
+
+    <input type="text" [(ngModel)]="location" placeholder="Location" />
+    <br /><br />
+
+    <button (click)="uploadPost()">Upload Post</button>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

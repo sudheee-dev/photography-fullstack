@@ -1,0 +1,30 @@
+<div *ngIf="loading()">Loading...</div>
+
+<div *ngIf="!loading()">
+  <a routerLink="/post-edit">← Back to My Posts</a>
+  <h2>Edit Post</h2>
+
+  <img [src]="'http://localhost:3000/' + imageUrl()" class="post-image" alt="Post Image" />
+
+  <div class="form-group">
+    <label>Description</label>
+    <textarea
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+      name="description"
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Location</label>
+    <input
+      type="text"
+      [ngModel]="location()"
+      (ngModelChange)="location.set($event)"
+      name="location"
+    />
+  </div>
+
+  <button (click)="save()">Save</button>
+  <button (click)="cancel()">Cancel</button>
+</div>

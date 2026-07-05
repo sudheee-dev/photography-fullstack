@@ -1,0 +1,29 @@
+.post-image {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+button {
+  margin-right: 8px;
+  padding: 8px 16px;
+}

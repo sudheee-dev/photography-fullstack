@@ -1,0 +1,13 @@
+<button (click)="Backto_Feed()">Feed</button>
+
+<h2>{{ title() }}</h2>
+
+<!-- <p>Users length: {{ users().length }}</p>
+
+<pre>{{ users() | json }}</pre> -->
+
+<hr />
+
+<div *ngFor="let user of users()">
+  <h3>{{ user.username }}</h3>
+</div>

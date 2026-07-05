@@ -1,0 +1,247 @@
+<div class="main-container">
+  <!-- LEFT SIDE -->
+  <div class="form-section">
+    <div class="registration-container">
+      <!-- your existing form -->
+    </div>
+  </div>
+</div>
+<div class="page">
+  <div class="quote">
+    Photography has nothing to do with CAMERA!! Upload your Memories 📸 Capture the Moments Do
+    register to upload your memories
+  </div>
+
+  <div class="registration-container">
+    <!-- ---------------#1ST PAGE -->
+    <form class="form" *ngIf="formGroupStep">
+      <h1>Registrationtype</h1>
+      <label>Enter Username</label>
+      <input type="text" [(ngModel)]="username" name="username" placeholder="Enter Type of User" />
+
+      <div class="form-group">
+        <label for="regEmail"><b>Email</b></label>
+        <input type="email" [(ngModel)]="email" name="regEmail" id="regEmail" required />
+      </div>
+
+      <div class="form-group">
+        <label for="regPassword"><b>Password</b></label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="regPassword"
+          id="regPassword"
+          required
+        />
+      </div>
+
+      <div class="radio-group">
+        <label for="Admin"
+          ><b>Admin Access</b>
+          <input type="radio" name="formType" value="formGroupStepOne" [(ngModel)]="selectedForm" />
+        </label>
+        <br />
+        <label for="NormalUser Access"
+          ><b>NormalUser Access</b>
+          <input type="radio" name="formType" value="formGroupStep1" [(ngModel)]="selectedForm" />
+        </label>
+      </div>
+      <div *ngIf="selectedForm === 'formGroupStepOne'">
+        <h1>Admin User Registration</h1>
+        <h4>Select Required Acsess</h4>
+        <div class="form-group">
+          <label for="Post-Edit"
+            ><b>Post-Edit</b>
+            <input type="checkbox" name="Post-Edit" [(ngModel)]="PostEdit" />
+          </label>
+          <br />
+          <label for="Post"
+            ><b>Post</b>
+            <input type="checkbox" name="Post" [(ngModel)]="Post" />
+          </label>
+          <br />
+          <label for="Both"
+            ><b>Post-Edit & Post</b>
+            <input type="checkbox" name="Post-Edit & Post" [(ngModel)]="PostEditandPost" />
+          </label>
+          <br />
+        </div>
+        <div class="form-group">
+          <label for="First name"><b>Enter First Name</b></label>
+          <input
+            type="text"
+            placeholder="abcd"
+            [(ngModel)]="firstName"
+            name="First name"
+            id="First name"
+            required
+          />
+          <br />
+        </div>
+        <div class="form-group">
+          <label for="Last Name"><b>Enter Last Name</b></label>
+          <input
+            type="text"
+            placeholder="abcd"
+            [(ngModel)]="lastName"
+            name="Last name"
+            id="Last name"
+            required
+          />
+          <br />
+        </div>
+        <div class="form-group">
+          <label for="Date">DOB:</label>
+          <input type="date" [(ngModel)]="dateogBirth" name="DOB" id="Date" required />
+          <br />
+          <label for="Gender">Verify Ur Gender:</label>
+          <select [(ngModel)]="gender" name="gender">
+            <option value="">-- Select Gender --</option>
+            <option value="Female">Female</option>
+            <option value="MALE">MALE</option>
+            <option value="She Male">She Male</option>
+            <option value="Dont Want to Specify">Dont Want to Specify</option>
+            <p>Selected Gender: {{ gender }}</p>
+          </select>
+        </div>
+        <div class="button-group">
+          <button type="button" (click)="preview()">
+            Preview Data Before Register {{ show ? '' : '' }}
+          </button>
+          <div *ngIf="show">
+            <p>{{ firstName }}</p>
+            <p>{{ lastName }}</p>
+            <p>{{ dateogBirth }}</p>
+            <p>{{ gender }}</p>
+            <p>{{ PostEdit }}</p>
+            <p>{{ Post }}</p>
+            <p>{{ PostEditandPost }}</p>
+          </div>
+        </div>
+        <br />
+        <div class="button-group">
+          <button type="button" (click)="register()">Register</button>
+          <br />
+          <button type="button" (click)="next()">Next</button>
+          <br />
+        </div>
+      </div>
+
+      <div *ngIf="selectedForm === 'formGroupStep1'">
+        <h1>NormalUser Regestration</h1>
+        <div class="form-group">
+          <label for="First name"><b>Enter First Name</b></label>
+          <input
+            type="text"
+            placeholder="abcd"
+            [(ngModel)]="firstName"
+            name="First name"
+            id="First name"
+            required
+          />
+          <br />
+        </div>
+        <div class="form-group">
+          <label for="Last Name"><b>Enter Last Name</b></label>
+          <input
+            type="text"
+            placeholder="abcd"
+            [(ngModel)]="lastName"
+            name="Last name"
+            id="Last name"
+            required
+          />
+          <br />
+        </div>
+        <div class="form-group">
+          <label for="Date">DOB:</label>
+          <input type="date" [(ngModel)]="dateogBirth" name="DOB" id="Date" required />
+          <br />
+          <label for="Gender">Verify Ur Gender:</label>
+          <select [(ngModel)]="gender" name="gender">
+            <option value="">-- Select Gender --</option>
+            <option value="Female">Female</option>
+            <option value="MALE">MALE</option>
+            <option value="She Male">She Male</option>
+            <option value="Dont Want to Specify">Dont Want to Specify</option>
+            <p>Selected Gender: {{ gender }}</p>
+          </select>
+        </div>
+        <div class="button-group">
+          <button type="button" (click)="preview()">
+            Preview Data Before Register {{ show ? '' : '' }}
+          </button>
+          <div *ngIf="show">
+            <p>{{ firstName }}</p>
+            <p>{{ lastName }}</p>
+            <p>{{ dateogBirth }}</p>
+            <p>{{ gender }}</p>
+          </div>
+        </div>
+        <br />
+        <div class="button-group">
+          <button type="button" (click)="register()">Register</button>
+          <br />
+          <button type="button" (click)="next()">Next</button>
+          <br />
+        </div>
+      </div>
+    </form>
+
+    <form *ngIf="formGroupStepTwo">
+      <h1>Login</h1>
+      <div class="form-group">
+        <label for="Email"><b>Enter Email</b></label>
+        <input
+          type="text"
+          placeholder="@xyz.com"
+          [(ngModel)]="email"
+          name="Email"
+          id="Email"
+          required
+        />
+        <br />
+      </div>
+      <br />
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="*****"
+          [(ngModel)]="password"
+          name="password"
+          id="password"
+          required
+        />
+        <br />
+      </div>
+      <div class="form-group">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="showPassword"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          Show Password
+        </label>
+        <br />
+      </div>
+      <div class="form-group">
+        <label for="Confirm password">Confirm Password:</label>
+        <input
+          [type]="showPassword ? 'text' : 'Confirm password'"
+          placeholder="*****"
+          [(ngModel)]="Confirmpassword"
+          name="Confirm password"
+          id="Confirm password"
+          required
+        />
+        <br />
+      </div>
+      <div class="button-group">
+        <button type="button" (click)="previousForm1()">Previous</button>||
+        <button type="button" (click)="login()">Login</button>
+      </div>
+    </form>
+  </div>
+</div>

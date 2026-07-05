@@ -1,0 +1,43 @@
+<div *ngIf="loading()">Loading...</div>
+
+<div *ngIf="!loading()">
+  <a routerLink="/postlist">← Back to Feed</a>
+  <h2>Edit Profile</h2>
+
+  <div class="form-group">
+    <label>Username</label>
+    <input
+      type="text"
+      [ngModel]="username()"
+      (ngModelChange)="username.set($event)"
+      name="username"
+    />
+  </div>
+
+  <div class="form-group">
+    <label>First Name</label>
+    <input
+      type="text"
+      [ngModel]="first_name()"
+      (ngModelChange)="first_name.set($event)"
+      name="first_name"
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Last Name</label>
+    <input
+      type="text"
+      [ngModel]="last_name()"
+      (ngModelChange)="last_name.set($event)"
+      name="last_name"
+    />
+  </div>
+
+  <div class="form-group">
+    <label>Bio</label>
+    <textarea [ngModel]="bio()" (ngModelChange)="bio.set($event)" name="bio"></textarea>
+  </div>
+
+  <button (click)="save()">Save</button>
+</div>
