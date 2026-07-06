@@ -28,27 +28,25 @@ const createPost = (req, res) => {
 const getallpost = (req, res) => {
   const loggedInUserId = req.user.id;
   const query = `
-   SELECT
+SELECT
     posts.id,
-  posts.user_id,
+    posts.user_id,
     posts.image_url,
     posts.description,
     posts.location,
     posts.created_at,
     profiles.username,
+
     MAX(
-    CASE
-        WHEN follows.follower_id IS NOT NULL THEN 1
-        ELSE 0
-    END
-) AS is_following,
+        CASE
+            WHEN follows.follower_id IS NOT NULL THEN 1
+            ELSE 0
+        END
+    ) AS is_following,
 
     COUNT(CASE WHEN likes.reaction_type = 'like' THEN 1 END) AS like_count,
-
     COUNT(CASE WHEN likes.reaction_type = 'love' THEN 1 END) AS love_count,
-
     COUNT(CASE WHEN likes.reaction_type = 'fire' THEN 1 END) AS fire_count,
-
     COUNT(CASE WHEN likes.reaction_type = 'wow' THEN 1 END) AS wow_count
 
 FROM posts
@@ -58,11 +56,19 @@ ON posts.user_id = profiles.user_id
 
 LEFT JOIN likes
 ON posts.id = likes.post_id
+
 LEFT JOIN follows
 ON follows.following_id = posts.user_id
 AND follows.follower_id = ?
 
-GROUP BY posts.id
+GROUP BY
+    posts.id,
+    posts.user_id,
+    posts.image_url,
+    posts.description,
+    posts.location,
+    posts.created_at,
+    profiles.username
 
 ORDER BY posts.created_at DESC;
   `;
