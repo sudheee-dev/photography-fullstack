@@ -3,7 +3,7 @@ const db = require("../config/db");
 // CREATE POST
 const createPost = (req, res) => {
   const { description, location } = req.body;
-  const image_url = req.file.path;
+  const image_url = `uploads/${req.file.filename}`;
 
   const userId = req.user.id;
 
