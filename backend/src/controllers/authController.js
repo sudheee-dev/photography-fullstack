@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
-  const normalizedGender = gender?.toLowerCase();
   const {
     email,
     password,
@@ -49,6 +48,7 @@ const registerUser = async (req, res) => {
             }
 
             const userId = userResult.insertId;
+            const normalizedGender = gender?.toLowerCase();
 
             const insertProfileQuery = `
               INSERT INTO profiles
