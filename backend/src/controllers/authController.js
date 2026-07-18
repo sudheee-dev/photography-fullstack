@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
+  const normalizedGender = gender?.toLowerCase();
   const {
     email,
     password,
