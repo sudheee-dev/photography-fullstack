@@ -1,24 +1,28 @@
+console.log("===== UPLOADMIDDLEWARE.JS LOADED =====");
+
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-const uploadDir = path.join(__dirname, "../../uploads");
+console.log(
+  "Cloudinary configured with cloud_name:",
+  process.env.CLOUDINARY_CLOUD_NAME,
+);
 
-// Create uploads folder if it doesn't exist
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
-
-    cb(null, uniqueName + path.extname(file.originalname));
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "photography-app",
+    resource_type: "auto",
+    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
   },
 });
 
-module.exports = multer({ storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
+});
+
+module.exports = upload;

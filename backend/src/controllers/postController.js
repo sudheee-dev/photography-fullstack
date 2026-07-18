@@ -3,7 +3,24 @@ const db = require("../config/db");
 // CREATE POST
 const createPost = (req, res) => {
   const { description, location } = req.body;
-  const image_url = `uploads/${req.file.filename}`;
+
+  // ✅ FIX: Try multiple properties to find Cloudinary URL
+  let image_url = null;
+
+  if (req.file.secure_url) {
+    image_url = req.file.secure_url; // Newer versions have this
+  } else if (req.file.url) {
+    image_url = req.file.url; // Some versions have this
+  } else if (req.file.path && req.file.path.includes("cloudinary")) {
+    image_url = req.file.path; // Cloudinary path
+  } else if (req.file.path) {
+    // ❌ Local disk storage (fallback, means Cloudinary didn't work)
+    image_url = req.file.path;
+  }
+
+  if (!image_url) {
+    return res.status(400).json({ error: "Failed to process image" });
+  }
 
   const userId = req.user.id;
 
@@ -15,16 +32,21 @@ const createPost = (req, res) => {
 
   db.query(query, [userId, image_url, description, location], (err, result) => {
     if (err) {
+      console.error("Database error:", err);
       return res.status(500).json(err);
     }
 
+    console.log("✅ Post created successfully with URL:", image_url);
     res.status(201).json({
       message: "Post created successfully ✅",
+      image_url: image_url,
     });
   });
 };
 
-// GET ALL POSTS
+// ... rest of the file remains the same
+
+// GET ALL POSTS (rest remains the same)
 const getallpost = (req, res) => {
   const loggedInUserId = req.user.id;
   const query = `
@@ -82,6 +104,7 @@ ORDER BY posts.created_at DESC;
   });
 };
 
+// ... rest of the file remains the same
 // UPDATE POST
 const updatepost = (req, res) => {
   const postId = req.params.id;
