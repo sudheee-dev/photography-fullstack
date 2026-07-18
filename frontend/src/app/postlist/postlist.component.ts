@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { Post } from '../services/post';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-postlist',
@@ -14,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PostlistComponent implements OnInit {
   isAdminUser = false;
+  backendUrl = environment.apiUrl.replace('/api', '');
   posts = signal<any[]>([]); // 👈 was: posts: any[] = []
 
   ngOnInit(): void {

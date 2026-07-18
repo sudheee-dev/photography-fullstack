@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class Post {
-  private baseUrl = 'http://localhost:3000/api/posts';
-
+  private baseUrl = `${environment.apiUrl}/posts`;
   constructor(private http: HttpClient) {}
 
   private authHeaders(): HttpHeaders {

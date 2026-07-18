@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-post-component',
@@ -39,7 +40,7 @@ export class PostComponent {
       Authorization: `Bearer ${token}`,
     });
 
-    this.http.post('http://localhost:3000/api/posts', formData, { headers }).subscribe({
+    this.http.post(`${environment.apiUrl}/posts`, formData, { headers }).subscribe({
       next: (res) => {
         console.log(res);
         alert('Post uploaded successfully');

@@ -4,8 +4,7 @@
   <a routerLink="/post-edit">← Back to My Posts</a>
   <h2>Edit Post</h2>
 
-  <img [src]="'http://localhost:3000/' + imageUrl()" class="post-image" alt="Post Image" />
-
+  <img [src]="imageUrl()" class="post-image" />
   <div class="form-group">
     <label>Description</label>
     <textarea
