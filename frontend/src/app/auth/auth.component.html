@@ -222,18 +222,18 @@
           name="password"
           id="password"
           required
+          type="checkbox"
+          [(ngModel)]="showPassword"
+          [ngModelOptions]="{ standalone: true }"
         />
+      </div>
+      <!-- <div class="form-group">
         <label>
           <input
-            type="checkbox"
-            [(ngModel)]="showPassword"
-            [ngModelOptions]="{ standalone: true }"
+           
           />
           Show Password
         </label>
-      </div>
-      <!-- <div class="form-group">
-        
       
       </div> -->
 
