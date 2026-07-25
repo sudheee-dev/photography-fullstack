@@ -7,7 +7,8 @@
   padding: 20px;
   position: relative;
 
-  background: linear-gradient(rgba(240, 244, 255, 0.7), rgba(232, 240, 254, 0.7)),
+  background:
+    linear-gradient(rgba(240, 244, 255, 0.7), rgba(232, 240, 254, 0.7)),
     url('https://www.69dropsstudio.co.uk/wp-content/uploads/2016/11/benefits-of-photography.jpg');
 
   background-size: cover;
@@ -68,9 +69,10 @@ select {
 
 /* CHECKBOX */
 .checkbox-group {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 10px;
+  display: inline-flex; /* Keeps elements on the same line */
+  align-items: center; /* Vertically centers the checkbox with text */
+  gap: 8px; /* Adds clean space between checkbox and text */
+  cursor: pointer;
 }
 
 /* GRID */
@@ -79,22 +81,39 @@ select {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-
+.button-row {
+  display: flex;
+  width: 100%;
+  gap: 30px; /* Gap between Register and Sign Up */
+  margin-top: 15px; /* Space above the button row */
+}
 /* BUTTON */
 button {
+  flex: 1; /* Gives both buttons equal width */
+  padding: 12px;
+  width: 100%;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  gap: 16px;
+}
+.btn-preview {
   width: 100%;
   padding: 12px;
   background: #1976d2;
   color: white;
   border: none;
   border-radius: 6px;
-
   cursor: pointer;
   font-size: 15px;
+  margin-top: 15px;
 }
 
 button:hover {
-  background: #1565c0;
+  background: wheat;
 }
 
 /* QUOTE FIX */
