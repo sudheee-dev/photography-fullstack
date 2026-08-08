@@ -32,9 +32,9 @@ router.get("/mine", authMiddleware, getMyPosts);
 router.put("/me/profile", authMiddleware, updateProfile);
 router.get("/followers", authMiddleware, getFollowers);
 router.get("/following", authMiddleware, getFollowing);
-router.post("/:id/generate-description", authMiddleware, generateAIDescription);
 
 router.get("/:id", authMiddleware, getPostById);
+router.post("/:id/generate-description", authMiddleware, generateAIDescription);
 router.put("/:id", authMiddleware, updatepost);
 router.delete("/:id", authMiddleware, deletePost);
 router.post("/:id/react", authMiddleware, reactPost);
