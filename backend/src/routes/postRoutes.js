@@ -18,6 +18,7 @@ const {
   updateProfile,
   getFollowing,
   getFollowers,
+  generateAIDescription,
 } = require("../controllers/postController");
 
 // CREATE POST
@@ -31,6 +32,7 @@ router.get("/mine", authMiddleware, getMyPosts);
 router.put("/me/profile", authMiddleware, updateProfile);
 router.get("/followers", authMiddleware, getFollowers);
 router.get("/following", authMiddleware, getFollowing);
+router.post("/:id/generate-description", authMiddleware, generateAIDescription);
 
 router.get("/:id", authMiddleware, getPostById);
 router.put("/:id", authMiddleware, updatepost);

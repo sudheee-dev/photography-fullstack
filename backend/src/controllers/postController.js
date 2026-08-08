@@ -584,6 +584,131 @@ const getFollowing = (req, res) => {
     return res.status(200).json(result);
   });
 };
+const generateAIDescription = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user.id;
+
+    // Get post to check ownership and get image URL
+    const getPostQuery = "SELECT * FROM posts WHERE id = ? AND user_id = ?";
+
+    db.query(getPostQuery, [postId, userId], async (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      const post = results[0];
+      const imageUrl = post.image_url;
+
+      if (!imageUrl) {
+        return res.status(400).json({ error: "Post has no image" });
+      }
+
+      try {
+        // Call Gemini API
+        const aiDescription = await getGeminiDescription(imageUrl);
+
+        // Update post with AI description
+        const updateQuery = "UPDATE posts SET description = ? WHERE id = ?";
+        db.query(updateQuery, [aiDescription, postId], (updateErr) => {
+          if (updateErr) {
+            console.error("Update error:", updateErr);
+            return res.status(500).json({ error: "Failed to update post" });
+          }
+
+          res.json({
+            message: "Description generated successfully",
+            description: aiDescription,
+          });
+        });
+      } catch (geminiError) {
+        console.error("Gemini API error:", geminiError);
+        res
+          .status(500)
+          .json({
+            error: "Failed to generate description: " + geminiError.message,
+          });
+      }
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Helper function to call Gemini API
+const getGeminiDescription = async (imageUrl) => {
+  const axios = require("axios");
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+  if (!GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY not configured");
+  }
+
+  try {
+    // Fetch image and convert to base64
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+      timeout: 10000,
+    });
+
+    const base64Image = Buffer.from(response.data, "binary").toString("base64");
+
+    // Determine image type
+    const contentType = response.headers["content-type"] || "image/jpeg";
+
+    // Call Gemini API
+    const geminiResponse = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: `You are an expert photo analyst. Analyze this photo and provide a compelling, detailed description. 
+
+Include:
+- What's visible in the image (main subject, objects, people, scenery)
+- The mood and atmosphere
+- Colors and lighting
+- Any notable composition or technique
+
+Keep description to one liner, engaging and descriptive.`,
+              },
+              {
+                inlineData: {
+                  mimeType: contentType,
+                  data: base64Image,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        timeout: 30000,
+      },
+    );
+
+    const description =
+      geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!description) {
+      throw new Error("No description received from Gemini API");
+    }
+
+    return description;
+  } catch (error) {
+    console.error("Gemini API error details:", error.message);
+    throw new Error(`Failed to generate description: ${error.message}`);
+  }
+};
+
 module.exports = {
   createPost,
   getallpost,
@@ -592,10 +717,11 @@ module.exports = {
   reactPost,
   followUser,
   unfollowUser,
-  getProfile,
   getPostById,
+  getProfile,
   getMyPosts,
   updateProfile,
   getFollowing,
   getFollowers,
+  generateAIDescription, // ADD THIS
 };
