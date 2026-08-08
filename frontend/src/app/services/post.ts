@@ -74,4 +74,12 @@ export class Post {
   getFollowing() {
     return this.http.get<any[]>(`${this.baseUrl}/following`, { headers: this.authHeaders() });
   }
+  // ADD THIS NEW METHOD
+  generateAIDescription(postId: number) {
+    return this.http.post(
+      `${this.baseUrl}/${postId}/generate-description`,
+      {},
+      { headers: this.authHeaders() },
+    );
+  }
 }
