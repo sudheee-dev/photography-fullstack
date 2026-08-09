@@ -8,18 +8,71 @@
   <div class="post-container">
     <h2>Create Post</h2>
 
-    <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+    <!-- FILE INPUT -->
+    <div class="form-group">
+      <label>Select Image:</label>
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        [disabled]="uploadInProgress"
+      />
+    </div>
 
-    <br /><br />
+    <!-- IMAGE PREVIEW -->
+    <div *ngIf="previewImageUrl" class="preview-container">
+      <img [src]="previewImageUrl" alt="Preview" class="preview-image" />
+    </div>
 
-    <textarea [(ngModel)]="description" placeholder="Description"></textarea>
+    <!-- ✨ AI SUGGESTION BOX -->
+    <div *ngIf="showAISuggestion" class="ai-suggestion-box">
+      <h3>✨ AI-Generated Description</h3>
 
-    <br /><br />
+      <div *ngIf="generatingDescription" class="loading">
+        <p>Generating description... (this may take a few seconds)</p>
+        <div class="spinner"></div>
+      </div>
 
-    <input type="text" [(ngModel)]="location" placeholder="Location" />
-    <br /><br />
+      <div *ngIf="!generatingDescription && aiSuggestion" class="suggestion-content">
+        <div class="suggestion-text">
+          <p>{{ aiSuggestion }}</p>
+        </div>
+        <div class="suggestion-buttons">
+          <button (click)="useAISuggestion()" class="btn-accept">✓ Use This Description</button>
+          <button (click)="dismissAISuggestion()" class="btn-decline">✕ Write My Own</button>
+        </div>
+      </div>
+    </div>
 
-    <button (click)="uploadPost()">Upload Post</button>
+    <!-- DESCRIPTION TEXTAREA -->
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea
+        [(ngModel)]="description"
+        placeholder="Photo description (AI will suggest one when you select an image)"
+        [disabled]="uploadInProgress"
+      ></textarea>
+    </div>
+
+    <!-- LOCATION INPUT -->
+    <div class="form-group">
+      <label>Location:</label>
+      <input
+        type="text"
+        [(ngModel)]="location"
+        placeholder="Location"
+        [disabled]="uploadInProgress"
+      />
+    </div>
+
+    <!-- UPLOAD BUTTON -->
+    <button
+      (click)="uploadPost()"
+      [disabled]="uploadInProgress || !selectedFile"
+      class="btn-upload"
+    >
+      {{ uploadInProgress ? '📤 Uploading...' : '📤 Upload Post' }}
+    </button>
   </div>
   <div class="content">
     <router-outlet></router-outlet>

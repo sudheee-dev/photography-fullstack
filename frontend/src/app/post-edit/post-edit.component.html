@@ -4,33 +4,9 @@
   <a routerLink="/post-edit">← Back to My Posts</a>
   <h2>Edit Post</h2>
 
-  <img [src]="imageUrl()" class="post-image" alt="Post Image" />
-
-  <!-- AI SUGGESTION BOX -->
-  <div class="ai-suggestion-box" *ngIf="showAISuggestion()">
-    <h3>✨ AI-Generated Description</h3>
-    <p>Would you like to use this description?</p>
-    <div class="suggestion-text">
-      {{ aiSuggestion() }}
-    </div>
-    <div class="suggestion-buttons">
-      <button (click)="useAISuggestion()" class="btn-accept">✓ Use This</button>
-      <button (click)="dismissAISuggestion()" class="btn-decline">✕ Dismiss</button>
-    </div>
-  </div>
-
+  <img [src]="imageUrl()" class="post-image" />
   <div class="form-group">
-    <div class="label-with-ai">
-      <label>Description</label>
-      <button
-        (click)="generateAIDescription()"
-        [disabled]="generatingDescription()"
-        class="btn-ai-generate"
-        type="button"
-      >
-        {{ generatingDescription() ? '✨ Generating...' : '✨ Generate with AI' }}
-      </button>
-    </div>
+    <label>Description</label>
     <textarea
       [ngModel]="description()"
       (ngModelChange)="description.set($event)"

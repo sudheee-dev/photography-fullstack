@@ -75,10 +75,10 @@ export class Post {
     return this.http.get<any[]>(`${this.baseUrl}/following`, { headers: this.authHeaders() });
   }
   // ADD THIS NEW METHOD
-  generateAIDescription(postId: number) {
+  generateAIDescriptionFromUrl(imageUrl: string) {
     return this.http.post(
-      `${this.baseUrl}/${postId}/generate-description`,
-      {},
+      `${this.baseUrl}/generate-description`,
+      { imageUrl: imageUrl },
       { headers: this.authHeaders() },
     );
   }

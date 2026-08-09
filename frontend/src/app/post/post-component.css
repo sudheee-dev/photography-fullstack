@@ -98,3 +98,222 @@ ul li a:hover {
 ul li a.active {
   background-color: black;
 }
+/* ============ POST FORM STYLES ============ */
+.post-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input[type='file'],
+.form-group input[type='text'],
+.form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.form-group input[type='file']:hover,
+.form-group input[type='text']:hover,
+.form-group textarea:hover {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input[type='text']:disabled,
+.form-group textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ============ IMAGE PREVIEW ============ */
+.preview-container {
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============ AI SUGGESTION BOX ============ */
+.ai-suggestion-box {
+  background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 20px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ai-suggestion-box h3 {
+  color: #667eea;
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+}
+
+.loading p {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.suggestion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.suggestion-text {
+  background: white;
+  padding: 14px;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+  line-height: 1.6;
+  color: #333;
+  font-size: 14px;
+}
+
+.suggestion-text p {
+  margin: 0;
+}
+
+.suggestion-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-accept,
+.btn-decline {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-accept {
+  background: #28a745;
+  color: white;
+}
+
+.btn-accept:hover {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-decline {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-decline:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ============ UPLOAD BUTTON ============ */
+.btn-upload {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.btn-upload:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-upload:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}

@@ -1,97 +1,29 @@
-.label-with-ai {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.btn-ai-generate {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-ai-generate:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-ai-generate:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.ai-suggestion-box {
-  background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
-  border: 2px solid #667eea;
-  border-radius: 8px;
-  padding: 16px;
+.post-image {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 6px;
   margin-bottom: 16px;
 }
 
-.ai-suggestion-box h3 {
-  color: #667eea;
-  margin: 0 0 8px 0;
-  font-size: 16px;
-}
-
-.ai-suggestion-box > p {
-  color: #666;
-  margin: 0 0 12px 0;
-  font-size: 14px;
-}
-
-.suggestion-text {
-  background: white;
-  padding: 12px;
-  border-radius: 6px;
-  border-left: 4px solid #667eea;
+.form-group {
   margin-bottom: 12px;
-  color: #333;
-  line-height: 1.6;
-  font-size: 14px;
 }
 
-.suggestion-buttons {
-  display: flex;
-  gap: 8px;
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
-.btn-accept,
-.btn-decline {
-  flex: 1;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
-.btn-accept {
-  background: #28a745;
-  color: white;
-}
-
-.btn-accept:hover {
-  background: #218838;
-  transform: translateY(-2px);
-}
-
-.btn-decline {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-decline:hover {
-  background: #5a6268;
-  transform: translateY(-2px);
+button {
+  margin-right: 8px;
+  padding: 8px 16px;
 }

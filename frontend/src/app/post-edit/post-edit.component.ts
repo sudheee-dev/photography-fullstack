@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from '../services/post';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 @Component({
   selector: 'app-post-edit',
   standalone: true,
@@ -18,9 +17,6 @@ export class PostEditComponent implements OnInit {
   location = signal('');
   imageUrl = signal('');
   loading = signal(true);
-  generatingDescription = signal(false);
-  showAISuggestion = signal(false);
-  aiSuggestion = signal('');
 
   constructor(
     private route: ActivatedRoute,
@@ -46,40 +42,6 @@ export class PostEditComponent implements OnInit {
     });
   }
 
-  // NEW METHOD: Generate AI description
-  generateAIDescription() {
-    this.generatingDescription.set(true);
-    this.postService.generateAIDescription(this.postId).subscribe({
-      next: (response: any) => {
-        this.aiSuggestion.set(response.description);
-        this.showAISuggestion.set(true);
-        this.generatingDescription.set(false);
-        this.snackBar.open('Description generated successfully! ✨', 'Close', { duration: 3000 });
-      },
-      error: (err) => {
-        console.error(err);
-        this.generatingDescription.set(false);
-        this.snackBar.open(err?.error?.error || 'Failed to generate description', 'Close', {
-          duration: 3000,
-        });
-      },
-    });
-  }
-
-  // NEW METHOD: Use AI suggestion
-  useAISuggestion() {
-    this.description.set(this.aiSuggestion());
-    this.showAISuggestion.set(false);
-    this.aiSuggestion.set('');
-    this.snackBar.open('AI suggestion applied!', 'Close', { duration: 2000 });
-  }
-
-  // NEW METHOD: Dismiss AI suggestion
-  dismissAISuggestion() {
-    this.showAISuggestion.set(false);
-    this.aiSuggestion.set('');
-  }
-
   save() {
     this.postService
       .updatePost(this.postId, { description: this.description(), location: this.location() })
@@ -96,7 +58,6 @@ export class PostEditComponent implements OnInit {
         },
       });
   }
-
   cancel() {
     this.router.navigate(['/post-edit']);
   }
