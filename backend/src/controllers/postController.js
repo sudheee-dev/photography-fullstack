@@ -584,93 +584,76 @@ const getFollowing = (req, res) => {
     return res.status(200).json(result);
   });
 };
-const generateAIDescription = async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const userId = req.user.id;
+const generateAIDescriptionFromUrl = (req, res) => {
+  console.log("===== GENERATE AI DESCRIPTION FROM URL CALLED =====");
 
-    // Get post to check ownership and get image URL
-    const getPostQuery = "SELECT * FROM posts WHERE id = ? AND user_id = ?";
+  const { imageUrl } = req.body;
 
-    db.query(getPostQuery, [postId, userId], async (err, results) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.status(500).json({ error: "Database error" });
-      }
-
-      if (results.length === 0) {
-        return res.status(404).json({ error: "Post not found" });
-      }
-
-      const post = results[0];
-      const imageUrl = post.image_url;
-
-      if (!imageUrl) {
-        return res.status(400).json({ error: "Post has no image" });
-      }
-
-      try {
-        // Call Gemini API
-        const aiDescription = await getGeminiDescription(imageUrl);
-
-        // Update post with AI description
-        const updateQuery = "UPDATE posts SET description = ? WHERE id = ?";
-        db.query(updateQuery, [aiDescription, postId], (updateErr) => {
-          if (updateErr) {
-            console.error("Update error:", updateErr);
-            return res.status(500).json({ error: "Failed to update post" });
-          }
-
-          res.json({
-            message: "Description generated successfully",
-            description: aiDescription,
-          });
-        });
-      } catch (geminiError) {
-        console.error("Gemini API error:", geminiError);
-        res
-          .status(500)
-          .json({
-            error: "Failed to generate description: " + geminiError.message,
-          });
-      }
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: error.message });
+  if (!imageUrl) {
+    console.error("❌ ERROR: No image URL provided");
+    return res.status(400).json({ error: "Image URL is required" });
   }
+
+  console.log("📸 Generating description for:", imageUrl);
+
+  getGeminiDescription(imageUrl)
+    .then((description) => {
+      console.log("✅ Description generated successfully");
+      res.json({
+        message: "Description generated successfully",
+        description: description,
+      });
+    })
+    .catch((error) => {
+      console.error("❌ Gemini API error:", error.message);
+      res.status(500).json({
+        error: "Failed to generate description: " + error.message,
+      });
+    });
 };
 
-// Helper function to call Gemini API
-const getGeminiDescription = async (imageUrl) => {
-  const axios = require("axios");
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+// ============ HELPER FUNCTION: CALL GEMINI API ============
+const getGeminiDescription = (imageUrl) => {
+  return new Promise((resolve, reject) => {
+    const axios = require("axios");
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-  if (!GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY not configured");
-  }
+    if (!GEMINI_API_KEY) {
+      console.error("❌ ERROR: GEMINI_API_KEY not found in .env");
+      reject(new Error("GEMINI_API_KEY not configured in environment"));
+      return;
+    }
 
-  try {
+    console.log(
+      "🔑 Using GEMINI_API_KEY:",
+      GEMINI_API_KEY.substring(0, 10) + "...",
+    );
+
     // Fetch image and convert to base64
-    const response = await axios.get(imageUrl, {
-      responseType: "arraybuffer",
-      timeout: 10000,
-    });
+    axios
+      .get(imageUrl, {
+        responseType: "arraybuffer",
+        timeout: 10000,
+      })
+      .then((response) => {
+        console.log("✅ Image fetched successfully");
 
-    const base64Image = Buffer.from(response.data, "binary").toString("base64");
+        const base64Image = Buffer.from(response.data, "binary").toString(
+          "base64",
+        );
+        const contentType = response.headers["content-type"] || "image/jpeg";
 
-    // Determine image type
-    const contentType = response.headers["content-type"] || "image/jpeg";
+        console.log("📦 Image converted to base64, content-type:", contentType);
 
-    // Call Gemini API
-    const geminiResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        contents: [
+        // Call Gemini API
+        return axios.post(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
           {
-            parts: [
+            contents: [
               {
-                text: `You are an expert photo analyst. Analyze this photo and provide a compelling, detailed description. 
+                parts: [
+                  {
+                    text: `You are an expert photo analyst. Analyze this photo and provide a compelling, detailed description. 
 
 Include:
 - What's visible in the image (main subject, objects, people, scenery)
@@ -678,35 +661,44 @@ Include:
 - Colors and lighting
 - Any notable composition or technique
 
-Keep description to one liner, engaging and descriptive.`,
-              },
-              {
-                inlineData: {
-                  mimeType: contentType,
-                  data: base64Image,
-                },
+Keep description to one liner , engaging and descriptive.`,
+                  },
+                  {
+                    inlineData: {
+                      mimeType: contentType,
+                      data: base64Image,
+                    },
+                  },
+                ],
               },
             ],
           },
-        ],
-      },
-      {
-        timeout: 30000,
-      },
-    );
+          { timeout: 30000 },
+        );
+      })
+      .then((geminiResponse) => {
+        console.log("✅ Gemini API response received");
 
-    const description =
-      geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const description =
+          geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    if (!description) {
-      throw new Error("No description received from Gemini API");
-    }
+        if (!description) {
+          console.error("❌ ERROR: No description in Gemini response");
+          reject(new Error("No description received from Gemini API"));
+          return;
+        }
 
-    return description;
-  } catch (error) {
-    console.error("Gemini API error details:", error.message);
-    throw new Error(`Failed to generate description: ${error.message}`);
-  }
+        console.log(
+          "✨ Description generated:",
+          description.substring(0, 50) + "...",
+        );
+        resolve(description);
+      })
+      .catch((error) => {
+        console.error("❌ Error details:", error.message);
+        reject(new Error(`Failed to generate description: ${error.message}`));
+      });
+  });
 };
 
 module.exports = {
@@ -717,11 +709,11 @@ module.exports = {
   reactPost,
   followUser,
   unfollowUser,
-  getPostById,
   getProfile,
+  getPostById,
   getMyPosts,
   updateProfile,
   getFollowing,
   getFollowers,
-  generateAIDescription, // ADD THIS
+  generateAIDescriptionFromUrl,
 };
