@@ -19,6 +19,7 @@ const {
   getFollowing,
   getFollowers,
   generateAIDescriptionFromUrl,
+  generateAIDescriptionFromFile,
 } = require("../controllers/postController");
 
 // CREATE POST
@@ -37,7 +38,12 @@ router.post(
   authMiddleware,
   generateAIDescriptionFromUrl,
 );
-
+router.post(
+  "/generate-description-from-file",
+  authMiddleware,
+  upload.single("image"),
+  generateAIDescriptionFromFile,
+);
 router.get("/:id", authMiddleware, getPostById);
 router.put("/:id", authMiddleware, updatepost);
 router.delete("/:id", authMiddleware, deletePost);

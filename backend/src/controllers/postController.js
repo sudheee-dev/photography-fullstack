@@ -612,16 +612,78 @@ const generateAIDescriptionFromUrl = (req, res) => {
     });
 };
 
-// ============ HELPER FUNCTION: CALL GEMINI API ============
-const getGeminiDescription = (imageUrl) => {
+// ============ NEW: GENERATE AI DESCRIPTION FROM FILE ============
+const generateAIDescriptionFromFile = (req, res) => {
+  console.log("===== GENERATE AI DESCRIPTION FROM FILE CALLED =====");
+
+  if (!req.file) {
+    console.error("❌ ERROR: No file uploaded");
+    return res.status(400).json({ error: "No image file provided" });
+  }
+
+  console.log("📸 File received:", req.file.filename);
+  console.log("📦 File size:", req.file.size, "bytes");
+
+  const startTime = Date.now();
+
+  // Get Cloudinary URL from req.file
+  let cloudinaryUrl = req.file.secure_url || req.file.path || req.file.url;
+
+  // ✅ COMPRESS IMAGE ON CLOUDINARY
+  cloudinaryUrl = cloudinaryUrl.replace(
+    "/upload/",
+    "/upload/w_1200,h_1200,c_limit,q_80/", // Compress: max 1200x1200, quality 80%
+  );
+
+  const contentType = req.file.mimetype || "image/jpeg";
+
+  console.log("🌐 Original URL:", req.file.secure_url || req.file.path);
+  console.log("🌐 Optimized URL:", cloudinaryUrl);
+
+  const axios = require("axios");
+  axios
+    .get(cloudinaryUrl, {
+      responseType: "arraybuffer",
+      timeout: 10000,
+    })
+    .then((response) => {
+      const fetchTime = Date.now() - startTime;
+      console.log(`✅ Image fetched from Cloudinary in ${fetchTime}ms`);
+
+      const base64Image = Buffer.from(response.data, "binary").toString(
+        "base64",
+      );
+      console.log("📦 Image converted to base64");
+
+      return getGeminiDescription(base64Image, contentType);
+    })
+    .then((description) => {
+      const totalTime = Date.now() - startTime;
+      console.log(
+        `✅ Description generated successfully in ${totalTime}ms total`,
+      );
+      res.json({
+        message: "Description generated successfully",
+        description: description,
+      });
+    })
+    .catch((error) => {
+      console.error("❌ Error:", error.message);
+      res.status(500).json({
+        error: "Failed to generate description: " + error.message,
+      });
+    });
+};
+
+// ============ UPDATE HELPER: ACCEPT BASE64 + CONTENT TYPE ============
+const getGeminiDescription = (base64Image, contentType) => {
   return new Promise((resolve, reject) => {
     const axios = require("axios");
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+    const GEMINI_API_KEY = (process.env.GEMINI_API_KEY || "").trim();
 
     if (!GEMINI_API_KEY) {
-      console.error("❌ ERROR: GEMINI_API_KEY not found in .env");
-      reject(new Error("GEMINI_API_KEY not configured in environment"));
-      return;
+      return reject(new Error("GEMINI_API_KEY not configured in environment"));
     }
 
     console.log(
@@ -629,63 +691,43 @@ const getGeminiDescription = (imageUrl) => {
       GEMINI_API_KEY.substring(0, 10) + "...",
     );
 
-    // Fetch image and convert to base64
+    // ✅ OPTIMIZED: Explicit fastest model
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+
+    const payload = {
+      contents: [
+        {
+          parts: [
+            {
+              // ✅ OPTIMIZED: Shorter prompt = faster response
+              text: "Describe this photo in one sentence. What is it? Mood and lighting?",
+            },
+            {
+              inlineData: {
+                mimeType: contentType || "image/jpeg",
+                data: base64Image,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
     axios
-      .get(imageUrl, {
-        responseType: "arraybuffer",
-        timeout: 10000,
+      .post(url, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": GEMINI_API_KEY,
+        },
+        timeout: 45000, // ✅ OPTIMIZED: Reduced from 30000
       })
       .then((response) => {
-        console.log("✅ Image fetched successfully");
-
-        const base64Image = Buffer.from(response.data, "binary").toString(
-          "base64",
-        );
-        const contentType = response.headers["content-type"] || "image/jpeg";
-
-        console.log("📦 Image converted to base64, content-type:", contentType);
-
-        // Call Gemini API
-        return axios.post(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `You are an expert photo analyst. Analyze this photo and provide a compelling, detailed description. 
-
-Include:
-- What's visible in the image (main subject, objects, people, scenery)
-- The mood and atmosphere
-- Colors and lighting
-- Any notable composition or technique
-
-Keep description to one liner , engaging and descriptive.`,
-                  },
-                  {
-                    inlineData: {
-                      mimeType: contentType,
-                      data: base64Image,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-          { timeout: 30000 },
-        );
-      })
-      .then((geminiResponse) => {
         console.log("✅ Gemini API response received");
 
         const description =
-          geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
-
+          response.data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!description) {
-          console.error("❌ ERROR: No description in Gemini response");
-          reject(new Error("No description received from Gemini API"));
-          return;
+          return reject(new Error("No description generated from Gemini"));
         }
 
         console.log(
@@ -695,8 +737,10 @@ Keep description to one liner , engaging and descriptive.`,
         resolve(description);
       })
       .catch((error) => {
-        console.error("❌ Error details:", error.message);
-        reject(new Error(`Failed to generate description: ${error.message}`));
+        const errorMessage =
+          error.response?.data?.error?.message || error.message;
+        console.error("❌ Gemini API Error Details:", errorMessage);
+        reject(new Error(errorMessage));
       });
   });
 };
@@ -716,4 +760,5 @@ module.exports = {
   getFollowing,
   getFollowers,
   generateAIDescriptionFromUrl,
+  generateAIDescriptionFromFile,
 };
