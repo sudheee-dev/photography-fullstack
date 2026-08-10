@@ -15,27 +15,27 @@
         type="file"
         accept="image/*"
         (change)="onFileSelected($event)"
-        [disabled]="uploadInProgress"
+        [disabled]="uploadInProgress()"
       />
     </div>
 
     <!-- IMAGE PREVIEW -->
-    <div *ngIf="previewImageUrl" class="preview-container">
-      <img [src]="previewImageUrl" alt="Preview" class="preview-image" />
+    <div *ngIf="previewImageUrl()" class="preview-container">
+      <img [src]="previewImageUrl()" alt="Preview" class="preview-image" />
     </div>
 
     <!-- ✨ AI SUGGESTION BOX -->
-    <div *ngIf="showAISuggestion" class="ai-suggestion-box">
+    <div *ngIf="showAISuggestion()" class="ai-suggestion-box">
       <h3>✨ AI-Generated Description</h3>
 
-      <div *ngIf="generatingDescription" class="loading">
-        <p>Generating description... (this may take a few seconds)</p>
+      <div *ngIf="generatingDescription()" class="loading">
+        <p>{{ aiSuggestion() }}</p>
         <div class="spinner"></div>
       </div>
 
-      <div *ngIf="!generatingDescription && aiSuggestion" class="suggestion-content">
+      <div *ngIf="!generatingDescription() && aiSuggestion()" class="suggestion-content">
         <div class="suggestion-text">
-          <p>{{ aiSuggestion }}</p>
+          <p>{{ aiSuggestion() }}</p>
         </div>
         <div class="suggestion-buttons">
           <button (click)="useAISuggestion()" class="btn-accept">✓ Use This Description</button>
@@ -48,9 +48,10 @@
     <div class="form-group">
       <label>Description:</label>
       <textarea
-        [(ngModel)]="description"
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)"
         placeholder="Photo description (AI will suggest one when you select an image)"
-        [disabled]="uploadInProgress"
+        [disabled]="uploadInProgress()"
       ></textarea>
     </div>
 
@@ -59,19 +60,20 @@
       <label>Location:</label>
       <input
         type="text"
-        [(ngModel)]="location"
+        [ngModel]="location()"
+        (ngModelChange)="location.set($event)"
         placeholder="Location"
-        [disabled]="uploadInProgress"
+        [disabled]="uploadInProgress()"
       />
     </div>
 
     <!-- UPLOAD BUTTON -->
     <button
       (click)="uploadPost()"
-      [disabled]="uploadInProgress || !selectedFile"
+      [disabled]="uploadInProgress() || !selectedFile"
       class="btn-upload"
     >
-      {{ uploadInProgress ? '📤 Uploading...' : '📤 Upload Post' }}
+      {{ uploadInProgress() ? '📤 Uploading...' : '📤 Upload Post' }}
     </button>
   </div>
   <div class="content">
